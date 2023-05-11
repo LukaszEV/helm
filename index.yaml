@@ -10,4 +10,32 @@ entries:
     urls:
     - https://github.com/LukaszEV/helm/releases/download/charts-core-2.0.9/charts-core-2.0.9.tgz
     version: 2.0.9
-generated: "2023-05-11T07:12:10.076451769Z"
+  charts-cron-job:
+  - apiVersion: v2
+    created: "2023-05-11T07:19:36.699875154Z"
+    dependencies:
+    - name: charts-core
+      repository: https://lukaszev.github.io/helm/
+      version: 2.0.9
+    description: EcoVadis Helm chart for K8s Cron Job
+    digest: 07b53a6b41b1d5be68e61445f34e9773e2a2f5362a51254cf837846c71f151d1
+    name: charts-cron-job
+    type: application
+    urls:
+    - https://github.com/LukaszEV/helm/releases/download/charts-cron-job-2.0.1/charts-cron-job-2.0.1.tgz
+    version: 2.0.1
+  charts-dotnet-core:
+  - apiVersion: v2
+    created: "2023-05-11T07:19:36.846178705Z"
+    dependencies:
+    - name: charts-core
+      repository: https://lukaszev.github.io/helm/
+      version: 2.0.9
+    description: EcoVadis Helm chart for .Net Core app
+    digest: c07559db6086b615c8770ac4abf03b4205178432b8eba8f9ab669f4e23df53a9
+    name: charts-dotnet-core
+    type: application
+    urls:
+    - https://github.com/LukaszEV/helm/releases/download/charts-dotnet-core-3.0.11/charts-dotnet-core-3.0.11.tgz
+    version: 3.0.11
+generated: "2023-05-11T07:19:36.846192505Z"
