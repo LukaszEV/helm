@@ -19,7 +19,6 @@ spec:
   selector:
     matchLabels:
       {{- include "charts-dotnet-core.selectorLabels" . | nindent 6 }}
-      version: "{{ .Values.global.image.tag }}"
   template:
     metadata:
       annotations:

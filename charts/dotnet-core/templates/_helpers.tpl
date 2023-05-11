@@ -52,6 +52,7 @@ Selector labels
 {{- define "charts-dotnet-core.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "charts-dotnet-core.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+version: "{{ .Values.global.image.tag }}"
 {{- end }}
 
 {{/*
