@@ -5,5 +5,5 @@ type: application
 dependencies:
 - name: charts-core
   version: 2.0.9
-  repository: "https://lukaszev.github.io/helm/charts/"
+  repository: "https://lukaszev.github.io/helm/"
 version: 3.0.11
