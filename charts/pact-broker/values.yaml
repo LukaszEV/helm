@@ -1,0 +1,93 @@
+# -- Pact Broker image information
+image:
+  registry: docker.io # -- Pact Broker image registry
+  repository: pactfoundation/pact-broker # -- Pact Broker image repository
+  tag: 2.102.2.0 # -- Pact Broker image tag (immutable tags are recommended) https://hub.docker.com/r/pactfoundation/pact-broker/tags
+  pullPolicy: IfNotPresent # -- Specify a imagePullPolicy
+  pullSecrets: # -- Array of imagePullSecrets to allow pulling the Pact Broker image from private registries: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    - dockerhub-pull-secret # -- It is recommended to create this secret and store docker.io credentials inside. Even when we are pulling image from a public repo there are may be transient errors when pulling without imagePullSecrets.
+
+envVars:
+  PACT_BROKER_DATABASE_ADAPTER: "postgres" # -- Database engine to use.
+  PACT_BROKER_DATABASE_HOST: "#{sqlServerHost}#" # -- Database host
+  PACT_BROKER_DATABASE_PORT: "#{databasePort}#" # -- Database port number
+  PACT_BROKER_DATABASE_NAME: "#{databaseName}#" # -- Database name
+  PACT_BROKER_PORT: "#{pactBrokerPort}#" # -- http port
+  PACT_BROKER_PUBLIC_HEARTBEAT: true # -- Set to true if you want the heartbeat endpoint to be publicly accessible.
+  PACT_BROKER_DISABLE_SSL_VERIFICATION: false # -- If set to true, SSL verification will be disabled for the HTTP requests made by the webhooks
+  PACT_BROKER_ALLOW_PUBLIC_READ: false # -- Set to true if you want public read access, but still require credentials for writing.
+  PACT_BROKER_ENABLE_PUBLIC_BADGE_ACCESS: false       # -- Set this to true to allow status badges to be embedded in README files without requiring a hardcoded password.
+  PACT_BROKER_HIDE_PACTFLOW_MESSAGES: true # -- Set to true to hide the messages in the logs about Pactflow
+  PACT_BROKER_DATABASE_SSLMODE: require # -- The Postgresql ssl mode. Allowed values: disable, allow, prefer, require, verify-ca, verify-full.
+
+secEnvVars:
+  PACT_BROKER_DATABASE_USERNAME: "#{pbDbUser}#" # -- Non-root username for the Pact Broker
+  PACT_BROKER_DATABASE_PASSWORD: "#{pbDbPassword}#" # -- Non-root user password for the Pact Broker
+  PACT_BROKER_BASIC_AUTH_USERNAME: "#{pbWriteUser}#" # -- Usermame for write access to the Pact Broker
+  PACT_BROKER_BASIC_AUTH_PASSWORD: "#{pbWriteUserPassword}#" # -- Password for write access to the Pact Broker
+  PACT_BROKER_BASIC_AUTH_READ_ONLY_USERNAME: "#{pbReadUser}#" # -- Usermame for read access to the Pact Broker
+  PACT_BROKER_BASIC_AUTH_READ_ONLY_PASSWORD: "#{pbReadUserPassword}#" # -- Password for read access to the Pact Broker
+
+# -- Broker configuration
+broker:
+  annotations: {} # -- Additional annotations that can be added to the Broker deployment
+  replicaCount: 1 # -- Number of Pact Broker replicas to deploy
+
+  # -- Pact Broker pods' [SecurityContext](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod)
+  podSecurityContext:
+    enabled: true # -- Enable Pact Broker pods' Security Context
+    fsGroup: 1001 # -- Set Pact Broker pod's Security Context fsGroup
+
+  # -- Pact Broker containers' [Security Context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container)
+  containerSecurityContext:
+    enabled: true # -- Enable Pact Broker containers' Security Context
+    runAsUser: 1001 # -- Set Pact Broker container's Security Context runAsUser
+    runAsNonRoot: true # -- Set Pact Broker container's Security Context runAsNonRoot
+
+  # -- The resources requests and limits for the Pact Broker containers
+  resources:
+    limits:
+      memory: 1024Mi
+      cpu: 2500m
+    requests:
+      memory: 512Mi
+      cpu: 100m
+
+  # -- Pact Broker [Liveness Probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes)
+  livenessProbe:
+    enabled: true # -- Enable livenessProbe on Pact Broker containers
+    initialDelaySeconds: 300 # -- Initial delay seconds for livenessProbe
+    periodSeconds: 1 # -- Period seconds for livenessProbe
+    timeoutSeconds: 5 # -- Timeout seconds for livenessProbe
+    failureThreshold: 3 # -- Failure threshold for livenessProbe
+    successThreshold: 1 # -- Success threshold for livenessProbe
+
+  # -- Pact Broker [Readiness Probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes)
+  readinessProbe:
+    enabled: true # -- Enable readinessProbe on Pact Broker containers
+    initialDelaySeconds: 30 # -- Initial delay seconds for readinessProbe
+    periodSeconds: 10 # -- Period seconds for readinessProbe
+    timeoutSeconds: 1 # -- Timeout seconds for readinessProbe
+    failureThreshold: 3 # -- Failure threshold for readinessProbe
+    successThreshold: 1 # -- Success threshold for readinessProbe
+
+# -- Service configuration
+service:
+  type: "ClusterIP" # -- Kubernetes service type
+  ports:
+    http: 80 # -- Pact service HTTP port
+
+# -- Service Account configuration
+serviceAccount:
+  create: true # -- Enable the creation of a ServiceAccount for Pact Broker pods
+  name: pact-broker-sa # -- Name of the created ServiceAccount. If not set and `serviceAccount.create` is true, a name is generated
+  annotations: {} # -- Additional custom annotations for the ServiceAccount.
+  automountServiceAccountToken: true # -- Auto-mount the service account token in the pod
+
+# -- Traefik ingress routes configuration
+ingress:
+  enabled: true # -- Enables or disables all Traefik CRDs: Ingress routes, middleware.
+  nonTlsRouteEnabled: false # -- Non-TLS Traefik route for pact-broker. You can consider turning this off if you are redirecting your traffic from http to https on different load balancer etc. Use case - redirecting traffic on Azure AppGateway that stands before Traefik.
+  tlsRouteEnabled: true # -- TLS Traefik route. Your Traefik instance should be preconfigured with certificate to terminate TLS for pact-broker.
+  redirectToHttps: false # -- Enable or disable redirecting traffic from http to https with Traefik middleware. Takes effect only when isTlsRouteEnabled is true.
+  host: "#{pactBrokerHost}#" # -- Full pact-broker host URL like 'pact-broker.your-domain.com'. WIll be used for matching routes in Traefik.
