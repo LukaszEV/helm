@@ -39,6 +39,19 @@ entries:
     - https://github.com/LukaszEV/helm/releases/download/charts-dotnet-core-3.0.11/charts-dotnet-core-3.0.11.tgz
     version: 3.0.11
   - apiVersion: v2
+    created: "2023-05-11T08:45:59.439865725Z"
+    dependencies:
+    - name: charts-core
+      repository: https://lukaszev.github.io/helm/
+      version: 2.0.9
+    description: EcoVadis Helm chart for .Net Core app
+    digest: a9e244dc748fdff93c2ac2247edc01293cd104a4c80facfe65fef77cc2726d51
+    name: charts-dotnet-core
+    type: application
+    urls:
+    - https://github.com/LukaszEV/helm/releases/download/charts-dotnet-core-0.0.2/charts-dotnet-core-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
     created: "2023-05-11T08:11:41.865087472Z"
     dependencies:
     - name: charts-core
@@ -65,4 +78,4 @@ entries:
     urls:
     - https://github.com/LukaszEV/helm/releases/download/pact-broker-1.0.1/pact-broker-1.0.1.tgz
     version: 1.0.1
-generated: "2023-05-11T08:11:41.865098072Z"
+generated: "2023-05-11T08:45:59.439882326Z"
