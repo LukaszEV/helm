@@ -93,6 +93,7 @@ global:
   elasticNamespace: #{elasticNamespace}#
 
   mongodbNetworkPolicyEnabled: false
+  eventHubNetworkPolicyEnabled: false
   automountServiceAccountToken: false
   lnmElasticNetworkPolicyEnabled: false
   redisNetworkPolicyEnabled: true
@@ -234,9 +235,6 @@ global:
 
     forceDeploy:
       enabled: false # enable to bypass error-rate and latency metrics. They are set == 100 if enabled.
-    
-    podDistribution:
-      enabled: true
 
   traefik: {} # override traefik settings are needed in order to run load tests for Flagger
   #   serviceName: #{traefikServiceName}# # k8s service name under which traefik is accessible.
